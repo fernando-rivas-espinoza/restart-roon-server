@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
-
 killall RoonServer
+
+echo "Killed roon server..."
+osascript -e 'quit app "Roon"'
+
+echo "Restarting roon..."
 
 open -a roon
