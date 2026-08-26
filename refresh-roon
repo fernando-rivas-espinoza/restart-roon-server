@@ -2,6 +2,7 @@
 
 echo "Killing roon server..."
 
+# Check if a roon server is running before attempting to kill
 if pgrep -x RoonServer &> /dev/null; then
 	killall RoonServer &> /dev/null
 	if [[ $? -ne 0 ]]; then
@@ -12,8 +13,10 @@ fi
 
 echo "Restarting roon..."
 
+# Attempt to quit the app with a retry if the process is still running,
+# since roon often throws an error when quit this way
 osascript -e 'quit app "Roon"' &> /dev/null
-if [[ $? -ne 0 ]]; then
+if [[ $? -ne 0 ]] && pgrep -x Roon &> /dev/null; then
 	osascript -e 'quit app "Roon"'
 	if [[ $? -ne 0 ]]; then
 		echo "ERROR: failed to quit roon"
@@ -21,7 +24,7 @@ if [[ $? -ne 0 ]]; then
 	fi
 fi
 
-echo "opening roon..."
+echo "Opening roon..."
 
 open -a Roon &> /dev/null
 if [[ $? -ne 0 ]]; then
