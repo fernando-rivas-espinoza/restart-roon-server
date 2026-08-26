@@ -1,9 +1,33 @@
 #!/usr/bin/env zsh
-killall RoonServer
 
-echo "Killed roon server..."
-osascript -e 'quit app "Roon"'
+echo "Killing roon server..."
+
+if pgrep -x RoonServer &> /dev/null; then
+	killall RoonServer &> /dev/null
+	if [[ $? -ne 0 ]]; then
+		echo "ERROR: failed to kill roon server"
+		exit 1
+	fi
+fi
 
 echo "Restarting roon..."
 
-open -a roon
+osascript -e 'quit app "Roon"' &> /dev/null
+if [[ $? -ne 0 ]]; then
+	osascript -e 'quit app "Roon"'
+	if [[ $? -ne 0 ]]; then
+		echo "ERROR: failed to quit roon"
+		exit 1
+	fi
+fi
+
+echo "opening roon..."
+
+open -a Roon &> /dev/null
+if [[ $? -ne 0 ]]; then
+	open -a Roon
+	if [[ $? -ne 0 ]]; then
+		echo "ERROR: failed to open roon, open manually"
+		exit 1
+	fi
+fi
